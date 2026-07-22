@@ -7,3 +7,30 @@
 # OS files
 .DS_Store
 Thumbs.db
+
+# Java compiled class files
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Java package files
+*.jar
+*.war
+*.nar
+*.ear
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
