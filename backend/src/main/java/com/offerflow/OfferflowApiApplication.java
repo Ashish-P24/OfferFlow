@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OfferflowApiApplication {
+public class OfferFlowApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OfferflowApiApplication.class, args);
+		SpringApplication.run(OfferFlowApiApplication.class, args);
 	}
 
 }
