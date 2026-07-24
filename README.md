@@ -1,23 +1,24 @@
 # OfferFlow
 
-OfferFlow is a production-oriented full-stack career management platform designed to help students and professionals organize every stage of their job search.
+OfferFlow is a production-oriented full-stack career management platform designed to help students and professionals manage every stage of their job search from a single application.
 
-The platform enables users to securely manage job applications, interviews, resumes, and career progress from a single application. It is being developed using modern software engineering practices, including layered architecture, RESTful APIs, JWT authentication, and clean separation of concerns.
+The project is being developed using modern software engineering practices, including layered architecture, RESTful APIs, JWT authentication, clean separation of concerns, and sprint-based development.
 
 ---
 
-## Project Goals
+# Project Goals
 
 - Build a production-quality full-stack application
-- Apply clean architecture and best software engineering practices
+- Apply clean architecture and backend design principles
 - Develop features incrementally using sprint-based development
-- Create a portfolio-ready project demonstrating backend and frontend development
+- Demonstrate industry-standard software engineering practices
+- Create a portfolio-ready project suitable for technical interviews
 
 ---
 
-## Implemented Features
+# Implemented Features
 
-### Authentication
+## Authentication
 
 - User Registration
 - User Login
@@ -27,61 +28,80 @@ The platform enables users to securely manage job applications, interviews, resu
 - Role-Based Authorization
 - Protected REST APIs
 
-### Backend Infrastructure
+## Job Application Management
+
+- Create Job Applications
+- View All Job Applications
+- View Job Application by ID
+- Update Job Applications
+- Delete Job Applications
+- User-specific Data Isolation
+- Job Status Tracking
+
+## Backend Infrastructure
 
 - Layered Architecture
 - RESTful API Design
 - PostgreSQL Integration
 - Spring Data JPA (Hibernate)
+- DTO-Based API Design
+- Mapper Layer
 - Global Exception Handling
 - Request Validation
 - Swagger / OpenAPI Documentation
 
 ---
 
-## Planned Features
+# Planned Features
 
-### Job Management
+## Dashboard & Analytics
 
-- Job Application Tracking
-- Application Status Management
-- Company & Position Details
-- Notes & Attachments
+- Total Applications
+- Application Status Analytics
+- Interview Statistics
+- Career Progress Dashboard
 
-### Interview Management
+## Search & Filtering
+
+- Search by Company
+- Search by Job Title
+- Filter by Application Status
+- Pagination & Sorting
+
+## Interview Management
 
 - Interview Scheduling
 - Interview Notes
 - Feedback Tracking
 
-### Dashboard
+## Resume Management
 
-- Application Statistics
-- Interview Statistics
-- Offers & Rejections
-- Career Progress Analytics
+- Resume Storage
+- Resume Versioning
+- Resume Association with Applications
 
-### Integrations
+## Integrations
 
 - Gmail Integration
 - Google Calendar Integration
 - LinkedIn Integration
 
-### AI Features
+## AI Features
 
 - Resume Analysis
 - Resume vs Job Matching
 - Cover Letter Generation
 - Interview Preparation
+- Personalized Career Insights
 
 ---
 
-## Tech Stack
+# Tech Stack
 
-### Backend
+## Backend
 
 - Java 21
-- Spring Boot
+- Spring Boot 3
 - Spring Security
 - Spring Data JPA (Hibernate)
 - PostgreSQL
@@ -89,129 +109,194 @@ The platform enables users to securely manage job applications, interviews, resu
 - JWT (JJWT)
 - Swagger / OpenAPI
 
-### Frontend *(Upcoming)*
+## Frontend *(Upcoming)*
 
 - React
 - TypeScript
 - Vite
 - Tailwind CSS
 
-### Development Tools
+## Development Tools
 
 - Git
 - GitHub
 - PostgreSQL
 - pgAdmin
+- IntelliJ IDEA
 - VS Code
 
 ---
 
-## Architecture
+# Architecture
 
 ```
-React Frontend
-        │
-        ▼
-REST API (Spring Boot)
-        │
-        ▼
-Spring Security
-        │
-        ▼
-JWT Authentication
-        │
-        ▼
-Controllers
-        │
-        ▼
-Services
-        │
-        ▼
-Repositories
-        │
-        ▼
-PostgreSQL
+                React Frontend
+                       │
+                       ▼
+              REST API (Spring Boot)
+                       │
+                       ▼
+              Spring Security Filter
+                       │
+                       ▼
+               JWT Authentication
+                       │
+                       ▼
+                  Controllers
+                       │
+                       ▼
+                    Services
+                       │
+                       ▼
+                     Mappers
+                       │
+                       ▼
+                 Repositories
+                       │
+                       ▼
+                  PostgreSQL
 ```
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```
 OfferFlow
 │
 ├── backend
-│   ├── config
-│   ├── controller
-│   ├── dto
-│   ├── entity
-│   ├── exception
-│   ├── repository
-│   ├── security
-│   └── service
+│   └── src
+│       └── main
+│           └── java
+│               └── com.offerflow
+│                   ├── config
+│                   ├── controller
+│                   ├── dto
+│                   │   ├── request
+│                   │   └── response
+│                   ├── entity
+│                   ├── exception
+│                   ├── mapper
+│                   ├── repository
+│                   ├── security
+│                   ├── service
+│                   │   └── impl
+│                   ├── util
+│                   └── OfferFlowApplication
 │
 ├── frontend (Upcoming)
 │
 ├── README.md
-└── ARCHITECTURE.md
+├── ARCHITECTURE.md
+└── LICENSE
 ```
 
 ---
 
-## Current API
+# Current API
 
-### Public Endpoints
+## Authentication
 
-```
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-GET  /api/v1/health
-```
-
-### Protected Endpoints
-
-```
-GET /api/v1/test
-```
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/api/v1/auth/register` | Register a new user |
+| POST | `/api/v1/auth/login` | Login and receive JWT |
 
 ---
 
-## Development Roadmap
+## Job Applications
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/api/v1/jobs` | Create a job application |
+| GET | `/api/v1/jobs` | Retrieve all job applications |
+| GET | `/api/v1/jobs/{id}` | Retrieve a specific job application |
+| PUT | `/api/v1/jobs/{id}` | Update a job application |
+| DELETE | `/api/v1/jobs/{id}` | Delete a job application |
+
+---
+
+## Utility
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/api/v1/health` | Health Check |
+| GET | `/api/v1/test` | Protected Test Endpoint |
+
+---
+
+# Development Roadmap
 
 | Sprint | Status |
 |---------|--------|
-| Sprint 1 – Project Setup | Completed |
-| Sprint 2 – Backend Foundation | Completed |
-| Sprint 3 – Authentication System | Completed |
-| Sprint 4 – Job Application Module | Next |
-| Sprint 5 – Dashboard | Planned |
-| Sprint 6 – Interview Management | Planned |
-| Sprint 7 – Frontend Development | Planned |
-| Sprint 8 – Integrations & AI | Planned |
-| Sprint 9 – Deployment & Production Polish | Planned |
+| Sprint 1 – Project Setup | ✅ Completed |
+| Sprint 2 – Backend Foundation | ✅ Completed |
+| Sprint 3 – Authentication System | ✅ Completed |
+| Sprint 4 – Job Application CRUD | ✅ Completed |
+| Sprint 5 – Dashboard, Search & Filtering | 🚧 Next |
+| Sprint 6 – Interview Management | 📅 Planned |
+| Sprint 7 – React Frontend | 📅 Planned |
+| Sprint 8 – AI Features & Integrations | 📅 Planned |
+| Sprint 9 – Deployment & CI/CD | 📅 Planned |
 
 ---
 
-## Current Status
+# Current Status
 
-Current Version: **Authentication Complete**
+## Current Version
 
-Completed:
+**Authentication & Job Application Module Complete**
+
+### Completed
 
 - Spring Boot Backend
 - PostgreSQL Integration
 - JWT Authentication
 - Spring Security
-- User Registration & Login
+- User Registration
+- User Login
+- Complete Job Application CRUD
+- DTO Layer
+- Mapper Layer
+- Global Exception Handling
+- Request Validation
 - Swagger Documentation
-- Protected REST APIs
+- User Ownership Enforcement
 
-Currently working on:
+### Currently Working On
 
-**Sprint 4 – Job Application Module**
+**Sprint 5 – Dashboard, Search, Filtering & Pagination**
 
 ---
 
-## License
+# Future Enhancements
 
-This project is licensed under the MIT License.
+- Dashboard with career analytics
+- Interview scheduling and tracking
+- Resume management
+- Email notifications
+- Google Calendar synchronization
+- AI-powered resume analysis
+- AI interview preparation
+- Docker support
+- CI/CD pipeline
+- Cloud deployment
+
+---
+
+# License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## Author
+
+**Ashish Pathak**
+
+B.Tech Computer Science & Engineering  
+VIT Vellore
+
+---
+
+⭐ If you like this project, consider starring the repository!
