@@ -5,10 +5,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.offerflow.dto.request.CreateJobApplicationRequest;
 import com.offerflow.dto.response.JobApplicationResponse;
+import com.offerflow.entity.JobStatus;
 import com.offerflow.entity.User;
 import com.offerflow.service.JobApplicationService;
 import com.offerflow.dto.request.UpdateJobApplicationRequest;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.data.domain.Page;
 
 import jakarta.validation.Valid;
 
@@ -32,10 +33,15 @@ public class JobApplicationController {
         return jobApplicationService.createJobApplication(request, user);
     }
     @GetMapping
-    public List<JobApplicationResponse> getJobApplications(
-            @AuthenticationPrincipal User user) {
+    public Page<JobApplicationResponse> getJobApplications(
+            @AuthenticationPrincipal User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        return jobApplicationService.getJobApplications(user);
+        return jobApplicationService.getJobApplications(
+                user,
+                page,
+                size);
     }
     @GetMapping("/{id}")
     public JobApplicationResponse getJobApplicationById(
@@ -61,5 +67,23 @@ public class JobApplicationController {
             @AuthenticationPrincipal User user) {
 
         jobApplicationService.deleteJobApplication(id, user);
+    }
+    @GetMapping("/search")
+    public List<JobApplicationResponse> searchJobApplications(
+            @RequestParam String keyword,
+            @AuthenticationPrincipal User user) {
+
+        return jobApplicationService.searchJobApplications(
+                keyword,
+                user);
+    }
+    @GetMapping("/filter")
+    public List<JobApplicationResponse> filterJobApplications(
+            @RequestParam JobStatus status,
+            @AuthenticationPrincipal User user) {
+
+        return jobApplicationService.filterJobApplications(
+                status,
+                user);
     }
 }

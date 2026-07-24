@@ -8,12 +8,14 @@ import com.offerflow.dto.request.CreateJobApplicationRequest;
 import com.offerflow.dto.request.UpdateJobApplicationRequest;
 import com.offerflow.dto.response.JobApplicationResponse;
 import com.offerflow.entity.JobApplication;
+import com.offerflow.entity.JobStatus;
 import com.offerflow.entity.User;
 import com.offerflow.exception.JobApplicationNotFoundException;
 import com.offerflow.mapper.JobApplicationMapper;
 import com.offerflow.repository.JobApplicationRepository;
 import com.offerflow.service.JobApplicationService;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @Service
 public class JobApplicationServiceImpl implements JobApplicationService {
@@ -47,19 +49,23 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
         job.setUser(user);
 
-        JobApplication savedJob =
-                jobApplicationRepository.save(job);
+        JobApplication savedJob = jobApplicationRepository.save(job);
 
         return jobApplicationMapper.toResponse(savedJob);
     }
 
     @Override
-    public List<JobApplicationResponse> getJobApplications(User user) {
+    public Page<JobApplicationResponse> getJobApplications(
+            User user,
+            int page,
+            int size) {
 
-        List<JobApplication> jobs =
-                jobApplicationRepository.findByUser(user);
+        Page<JobApplication> jobs =
+                jobApplicationRepository.findByUser(
+                        user,
+                        PageRequest.of(page, size));
 
-        return jobApplicationMapper.toResponseList(jobs);
+        return jobs.map(jobApplicationMapper::toResponse);
     }
 
     @Override
@@ -103,11 +109,41 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         JobApplication job = findJobApplication(id, user);
 
         jobApplicationRepository.delete(job);
-    }  
+    }
+
+    @Override
+    public List<JobApplicationResponse> searchJobApplications(
+            String keyword,
+            User user) {
+
+        List<JobApplication> jobs =
+                jobApplicationRepository
+                        .findByUserAndCompanyContainingIgnoreCaseOrUserAndJobTitleContainingIgnoreCase(
+                                user,
+                                keyword,
+                                user,
+                                keyword);
+
+        return jobApplicationMapper.toResponseList(jobs);
+    }
+
+    @Override
+    public List<JobApplicationResponse> filterJobApplications(
+            JobStatus status,
+            User user) {
+
+        List<JobApplication> jobs =
+                jobApplicationRepository.findByUserAndStatus(
+                        user,
+                        status);
+
+        return jobApplicationMapper.toResponseList(jobs);
+    }
+
     private JobApplication findJobApplication(
             Long id,
             User user) {
-                
+
         return jobApplicationRepository
                 .findByIdAndUser(id, user)
                 .orElseThrow(() ->
