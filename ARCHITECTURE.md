@@ -2,11 +2,13 @@
 
 ## Overview
 
-OfferFlow is a production-oriented full-stack career management platform that helps users manage job applications, interviews, resumes, and career progress.
+OfferFlow is a production-oriented full-stack career management platform that enables users to securely manage their job search from a single application.
+
+The backend follows a layered architecture with Spring Boot, Spring Security, JWT authentication, and PostgreSQL.
 
 ---
 
-# Tech Stack
+# Technology Stack
 
 ## Backend
 
@@ -16,6 +18,7 @@ OfferFlow is a production-oriented full-stack career management platform that he
 - Spring Data JPA (Hibernate)
 - PostgreSQL
 - Maven
+- JWT (JJWT)
 
 ## Frontend
 
@@ -30,15 +33,24 @@ OfferFlow is a production-oriented full-stack career management platform that he
 - GitHub
 - PostgreSQL
 - pgAdmin
-- Swagger (OpenAPI)
+- Swagger / OpenAPI
 - VS Code
 
 ---
 
-# Backend Architecture
+# High-Level Architecture
 
 ```
 React Frontend
+        │
+        ▼
+REST API
+        │
+        ▼
+Spring Security
+        │
+        ▼
+JWT Authentication Filter
         │
         ▼
 REST Controllers
@@ -61,79 +73,282 @@ PostgreSQL
 com.offerflow
 │
 ├── config
+│
 ├── controller
+│
 ├── dto
 │   ├── request
 │   └── response
+│
 ├── entity
+│
 ├── exception
-├── mapper
+│
 ├── repository
+│
 ├── security
+│
 ├── service
 │   └── impl
-└── util
+│
+└── OfferFlowApplication
 ```
 
 ---
 
-# Database Design
+# Current Database Design
 
 ## User
 
 | Field | Type | Description |
 |--------|------|-------------|
 | id | Long | Primary Key |
-| firstName | String | User's first name |
-| lastName | String | User's last name |
-| email | String | Unique email |
-| password | String | BCrypt hash |
-| role | USER / ADMIN | User role |
-| createdAt | Timestamp | Created automatically |
-| updatedAt | Timestamp | Updated automatically |
+| firstName | String | User First Name |
+| lastName | String | User Last Name |
+| email | String | Unique Email Address |
+| password | String | BCrypt Password Hash |
+| role | USER / ADMIN | Authorization Role |
+| createdAt | Timestamp | Created Automatically |
+| updatedAt | Timestamp | Updated Automatically |
 
 ---
 
-# Planned Modules
+# Authentication Architecture
 
-- Authentication
-- User Management
-- Job Applications
-- Interview Tracking
-- Dashboard
-- Resume Management
-- Notifications
-- Analytics
+## Registration Flow
+
+```
+Client
+
+↓
+
+POST /api/v1/auth/register
+
+↓
+
+AuthController
+
+↓
+
+UserService
+
+↓
+
+Password Encryption (BCrypt)
+
+↓
+
+UserRepository
+
+↓
+
+PostgreSQL
+
+↓
+
+AuthResponse
+```
+
+---
+
+## Login Flow
+
+```
+Client
+
+↓
+
+POST /api/v1/auth/login
+
+↓
+
+AuthController
+
+↓
+
+UserService
+
+↓
+
+UserRepository
+
+↓
+
+Password Verification
+
+↓
+
+JwtService
+
+↓
+
+JWT Generation
+
+↓
+
+AuthResponse
+```
+
+---
+
+## Authenticated Request Flow
+
+```
+Client
+
+↓
+
+Authorization: Bearer <JWT>
+
+↓
+
+JwtAuthenticationFilter
+
+↓
+
+JwtService
+
+↓
+
+CustomUserDetailsService
+
+↓
+
+UserRepository
+
+↓
+
+Spring Security Context
+
+↓
+
+Protected Controller
+```
 
 ---
 
 # API Convention
 
+All REST APIs follow:
+
 ```
 /api/v1/...
 ```
 
-Examples:
+Current endpoints:
 
 ```
-POST   /api/v1/auth/register
-POST   /api/v1/auth/login
+POST /api/v1/auth/register
+POST /api/v1/auth/login
 
-GET    /api/v1/jobs
-POST   /api/v1/jobs
-PUT    /api/v1/jobs/{id}
-DELETE /api/v1/jobs/{id}
+GET /api/v1/health
+GET /api/v1/test
 ```
+
+---
+
+# Current Modules
+
+## Completed
+
+### Authentication
+
+- User Registration
+- Login
+- JWT Authentication
+- Spring Security
+- Role-Based Authorization
+
+### Backend Infrastructure
+
+- Exception Handling
+- Request Validation
+- Swagger Documentation
+- PostgreSQL Integration
+
+---
+
+## Upcoming
+
+- Job Application Module
+- Dashboard
+- Interview Tracking
+- Resume Management
+- Gmail Integration
+- Google Calendar Integration
+- LinkedIn Integration
+- AI Features
 
 ---
 
 # Development Roadmap
 
-- Sprint 1 — Project Setup
-- Sprint 2 — Backend Foundation
-- Sprint 3 — Authentication
-- Sprint 4 — Job Application Module
-- Sprint 5 — Dashboard
-- Sprint 6 — Resume & Notifications
-- Sprint 7 — Frontend
-- Sprint 8 — Deployment & Polish
+## Sprint 1
+
+Project Initialization
+
+**Status:** Completed
+
+---
+
+## Sprint 2
+
+Backend Foundation
+
+**Status:** Completed
+
+---
+
+## Sprint 3
+
+Authentication System
+
+**Status:** Completed
+
+---
+
+## Sprint 4
+
+Job Application Module
+
+**Status:** Next
+
+---
+
+## Sprint 5
+
+Dashboard & Analytics
+
+**Status:** Planned
+
+---
+
+## Sprint 6
+
+Interview & Resume Management
+
+**Status:** Planned
+
+---
+
+## Sprint 7
+
+Frontend Development
+
+**Status:** Planned
+
+---
+
+## Sprint 8
+
+External Integrations & AI
+
+**Status:** Planned
+
+---
+
+## Sprint 9
+
+Deployment & Production Readiness
+
+**Status:** Planned
