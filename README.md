@@ -20,6 +20,8 @@ The project is being developed using modern software engineering practices, incl
 
 ## Authentication
 
+### Backend
+
 - User Registration
 - User Login
 - JWT Authentication
@@ -28,7 +30,21 @@ The project is being developed using modern software engineering practices, incl
 - Role-Based Authorization
 - Protected REST APIs
 
+### Frontend
+
+- Login Screen
+- Authentication Context
+- Protected Routes
+- JWT Storage
+- Automatic Login State
+- Logout
+- Axios JWT Interceptor
+
+---
+
 ## Job Application Management
+
+### Backend
 
 - Create Job Applications
 - View All Job Applications
@@ -42,37 +58,82 @@ The project is being developed using modern software engineering practices, incl
 - User-specific Data Isolation
 - Job Status Tracking
 
-## Dashboard & Analytics
+### Frontend
+
+- Dashboard Layout
+- API Integration
+- Job Service Layer
+- Dashboard Data Fetching
+
+---
+
+## Dashboard
+
+### Backend
 
 - Total Applications
-- Applied Applications Count
-- Interview Applications Count
+- Applied Count
+- Interview Count
 - Offer Count
-- Rejected Applications Count
+- Rejected Count
+
+### Frontend
+
+- Dashboard Page
+- Statistic Cards
+- Responsive Layout
+- Navbar
+- Sidebar
+
+---
 
 ## Backend Infrastructure
 
 - Layered Architecture
 - RESTful API Design
 - PostgreSQL Integration
-- Spring Data JPA (Hibernate)
+- Spring Data JPA
 - DTO-Based API Design
 - Mapper Layer
 - Repository Pattern
 - Global Exception Handling
 - Request Validation
-- Swagger / OpenAPI Documentation
+- Swagger Documentation
+- CORS Configuration
+
+---
+
+## Frontend Infrastructure
+
+- React 19
+- TypeScript
+- Vite 8
+- Tailwind CSS v4
+- React Router
+- Axios
+- React Context API
+- Lucide React
+- Responsive Layout Foundation
 
 ---
 
 # Planned Features
 
-## React Frontend
+## Applications Management UI
 
-- User Authentication Pages
-- Dashboard
-- Job Management Interface
-- Responsive Design
+- Applications Table
+- Search
+- Filter
+- Pagination
+- Add Application
+- Edit Application
+- Delete Confirmation
+
+## Dashboard Enhancements
+
+- Charts
+- Activity Timeline
+- Recent Applications
 
 ## Interview Management
 
@@ -84,13 +145,7 @@ The project is being developed using modern software engineering practices, incl
 
 - Resume Storage
 - Resume Versioning
-- Resume Association with Applications
-
-## Integrations
-
-- Gmail Integration
-- Google Calendar Integration
-- LinkedIn Integration
+- Resume Association
 
 ## AI Features
 
@@ -98,7 +153,13 @@ The project is being developed using modern software engineering practices, incl
 - Resume vs Job Matching
 - Cover Letter Generation
 - Interview Preparation
-- Personalized Career Insights
+- Career Insights
+
+## Integrations
+
+- Gmail
+- Google Calendar
+- LinkedIn
 
 ---
 
@@ -109,18 +170,23 @@ The project is being developed using modern software engineering practices, incl
 - Java 21
 - Spring Boot 3
 - Spring Security
-- Spring Data JPA (Hibernate)
+- Spring Data JPA
 - PostgreSQL
 - Maven
-- JWT (JJWT)
-- Swagger / OpenAPI
+- JWT
+- Swagger
 
-## Frontend *(Upcoming)*
+## Frontend
 
-- React
+- React 19
 - TypeScript
-- Vite
-- Tailwind CSS
+- Vite 8
+- Tailwind CSS v4
+- React Router
+- Axios
+- React Hook Form
+- Zod
+- Lucide React
 
 ## Development Tools
 
@@ -171,26 +237,20 @@ The project is being developed using modern software engineering practices, incl
 OfferFlow
 │
 ├── backend
-│   └── src
-│       └── main
-│           └── java
-│               └── com.offerflow
-│                   ├── config
-│                   ├── controller
-│                   ├── dto
-│                   │   ├── request
-│                   │   └── response
-│                   ├── entity
-│                   ├── exception
-│                   ├── mapper
-│                   ├── repository
-│                   ├── security
-│                   ├── service
-│                   │   └── impl
-│                   ├── util
-│                   └── OfferFlowApplication
 │
-├── frontend (Upcoming)
+├── frontend
+│   ├── src
+│   │   ├── api
+│   │   ├── components
+│   │   ├── context
+│   │   ├── layouts
+│   │   ├── pages
+│   │   ├── routes
+│   │   ├── services
+│   │   ├── types
+│   │   └── assets
+│   │
+│   └── public
 │
 ├── README.md
 ├── ARCHITECTURE.md
@@ -203,41 +263,41 @@ OfferFlow
 
 ## Authentication
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/api/v1/auth/register` | Register a new user |
-| POST | `/api/v1/auth/login` | Login and receive JWT |
+| Method | Endpoint |
+|---------|----------|
+| POST | `/api/v1/auth/register` |
+| POST | `/api/v1/auth/login` |
 
 ---
 
 ## Job Applications
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/api/v1/jobs` | Create a job application |
-| GET | `/api/v1/jobs` | Retrieve paginated job applications |
-| GET | `/api/v1/jobs/{id}` | Retrieve a specific job application |
-| PUT | `/api/v1/jobs/{id}` | Update a job application |
-| DELETE | `/api/v1/jobs/{id}` | Delete a job application |
-| GET | `/api/v1/jobs/search?keyword=` | Search by company or job title |
-| GET | `/api/v1/jobs/filter?status=` | Filter applications by status |
+| Method | Endpoint |
+|---------|----------|
+| POST | `/api/v1/jobs` |
+| GET | `/api/v1/jobs` |
+| GET | `/api/v1/jobs/{id}` |
+| PUT | `/api/v1/jobs/{id}` |
+| DELETE | `/api/v1/jobs/{id}` |
+| GET | `/api/v1/jobs/search?keyword=` |
+| GET | `/api/v1/jobs/filter?status=` |
 
 ---
 
 ## Dashboard
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | `/api/v1/dashboard` | Retrieve application statistics |
+| Method | Endpoint |
+|---------|----------|
+| GET | `/api/v1/dashboard` |
 
 ---
 
 ## Utility
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | `/api/v1/health` | Health Check |
-| GET | `/api/v1/test` | Protected Test Endpoint |
+| Method | Endpoint |
+|---------|----------|
+| GET | `/api/v1/health` |
+| GET | `/api/v1/test` |
 
 ---
 
@@ -247,72 +307,51 @@ OfferFlow
 |---------|--------|
 | Sprint 1 – Project Setup | Completed |
 | Sprint 2 – Backend Foundation | Completed |
-| Sprint 3 – Authentication System | Completed |
-| Sprint 4 – Job Application CRUD | Completed |
-| Sprint 5 – Dashboard, Search, Filtering & Pagination | Completed |
-| Sprint 6 – React Frontend | Next |
-| Sprint 7 – Interview Management | Planned |
-| Sprint 8 – AI Features & Integrations | Planned |
-| Sprint 9 – Deployment & CI/CD | Planned |
+| Sprint 3 – Authentication | Completed |
+| Sprint 4 – Job Application Module | Completed |
+| Sprint 5 – Dashboard, Search, Filter & Pagination | Completed |
+| Sprint 6 – Frontend Foundation | Completed |
+| Sprint 7 – Applications Management UI | In Progress |
+| Sprint 8 – Dashboard Analytics & Charts | Planned |
+| Sprint 9 – Resume & Interview Management | Planned |
+| Sprint 10 – AI Features & Deployment | Planned |
 
 ---
 
 # Current Status
 
-## Current Version
+## Backend
 
-**Core Backend Complete**
-
-### Completed
-
-- Spring Boot Backend
-- PostgreSQL Integration
 - JWT Authentication
 - Spring Security
-- User Registration
-- User Login
-- Complete Job Application CRUD
-- Dashboard Analytics
-- Search by Company & Job Title
-- Status Filtering
+- CRUD Operations
+- Dashboard API
+- Search
+- Filtering
 - Pagination
-- DTO Layer
-- Mapper Layer
-- Repository Pattern
-- Global Exception Handling
-- Request Validation
-- Swagger Documentation
-- User Ownership Enforcement
+- Swagger
+- CORS
+- PostgreSQL Integration
 
-### Currently Working On
+## Frontend
 
-**Sprint 6 – React Frontend**
-
----
-
-# Future Enhancements
-
-- Responsive React Frontend
-- Dashboard Charts & Visual Analytics
-- Interview Scheduling & Tracking
-- Resume Management
-- Email Notifications
-- Gmail Integration
-- Google Calendar Integration
-- LinkedIn Integration
-- AI Resume Analysis
-- AI Job Matching
-- AI Cover Letter Generation
-- AI Interview Preparation
-- Docker Support
-- CI/CD Pipeline
-- Cloud Deployment
+- React Setup
+- Routing
+- Authentication
+- Protected Routes
+- JWT Integration
+- Axios
+- Dashboard Layout
+- Navbar
+- Sidebar
+- Dashboard Statistics
+- Backend Connectivity
 
 ---
 
 # License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the MIT License.
 
 ---
 
@@ -322,7 +361,3 @@ This project is licensed under the **MIT License**.
 
 B.Tech Computer Science & Engineering  
 VIT Vellore
-
----
-
-If you found this project useful or interesting, consider starring the repository.
