@@ -4,7 +4,7 @@
 
 OfferFlow is a production-oriented full-stack career management platform built using a layered architecture that emphasizes scalability, maintainability, and clean separation of concerns.
 
-The backend is developed with Spring Boot and follows industry-standard design principles, including DTO-based communication, service-oriented business logic, repository abstraction, JWT authentication, and PostgreSQL persistence.
+The backend is developed with Spring Boot and follows industry-standard software engineering principles, including DTO-based communication, service-oriented business logic, repository abstraction, JWT authentication, pagination, dashboard analytics, and PostgreSQL persistence.
 
 ---
 
@@ -19,6 +19,7 @@ The backend is developed with Spring Boot and follows industry-standard design p
 - PostgreSQL
 - Maven
 - JWT (JJWT)
+- Swagger / OpenAPI
 
 ## Frontend *(Upcoming)*
 
@@ -33,7 +34,6 @@ The backend is developed with Spring Boot and follows industry-standard design p
 - GitHub
 - PostgreSQL
 - pgAdmin
-- Swagger / OpenAPI
 - IntelliJ IDEA
 - VS Code
 
@@ -42,31 +42,31 @@ The backend is developed with Spring Boot and follows industry-standard design p
 # High-Level Architecture
 
 ```
-                 React Frontend
-                        │
-                        ▼
-                 REST API (Spring Boot)
-                        │
-                        ▼
-               Spring Security Filter
-                        │
-                        ▼
-                 JWT Authentication
-                        │
-                        ▼
-                  REST Controllers
-                        │
-                        ▼
-                  Service Layer
-                        │
-                        ▼
-                    Mapper Layer
-                        │
-                        ▼
-                 Repository Layer
-                        │
-                        ▼
-                    PostgreSQL
+                    React Frontend
+                           │
+                           ▼
+                    REST API (Spring Boot)
+                           │
+                           ▼
+                  Spring Security Filter
+                           │
+                           ▼
+                    JWT Authentication
+                           │
+                           ▼
+                     REST Controllers
+                           │
+                           ▼
+                     Service Layer
+                           │
+                           ▼
+                       Mapper Layer
+                           │
+                           ▼
+                    Repository Layer
+                           │
+                           ▼
+                       PostgreSQL
 ```
 
 ---
@@ -79,6 +79,11 @@ com.offerflow
 ├── config
 │
 ├── controller
+│   ├── AuthController
+│   ├── DashboardController
+│   ├── HealthController
+│   ├── JobApplicationController
+│   └── TestController
 │
 ├── dto
 │   ├── request
@@ -130,32 +135,36 @@ com.offerflow
 | jobTitle | String | Position Applied For |
 | location | String | Job Location |
 | jobUrl | String | Original Job Posting |
-| salary | String | Offered Salary / Package |
+| salary | String | Offered Salary |
 | status | JobStatus | Current Application Status |
 | applicationDate | LocalDate | Date Applied |
 | notes | String | Personal Notes |
 | createdAt | Timestamp | Automatically Generated |
 | updatedAt | Timestamp | Automatically Updated |
-| user | User | Owner of the Application |
+| user | User | Owner |
 
 ---
 
-# Entity Relationships
+# Entity Relationship
 
 ```
-User (1)
-   │
-   │
-   └──────────────< JobApplication (Many)
+              User
+               │
+               │ 1
+               │
+               │
+               ▼
+      JobApplication
+            *
 ```
 
-Each authenticated user owns multiple job applications, while each job application belongs to exactly one user.
+One authenticated user owns multiple job applications, while every job application belongs to exactly one user.
 
 ---
 
-# Authentication Architecture
+# Authentication Flow
 
-## Registration Flow
+## Registration
 
 ```
 Client
@@ -174,7 +183,7 @@ UserService
 
 ↓
 
-Password Encoding (BCrypt)
+BCrypt Password Encoding
 
 ↓
 
@@ -183,15 +192,11 @@ UserRepository
 ↓
 
 PostgreSQL
-
-↓
-
-AuthResponse
 ```
 
 ---
 
-## Login Flow
+## Login
 
 ```
 Client
@@ -210,7 +215,7 @@ AuthenticationManager
 
 ↓
 
-UserDetailsService
+CustomUserDetailsService
 
 ↓
 
@@ -222,7 +227,7 @@ JwtService
 
 ↓
 
-JWT Token Generation
+JWT Generation
 
 ↓
 
@@ -231,7 +236,7 @@ AuthResponse
 
 ---
 
-## Authenticated Request Flow
+## Protected Request
 
 ```
 Client
@@ -250,10 +255,6 @@ JwtService
 
 ↓
 
-CustomUserDetailsService
-
-↓
-
 Spring Security Context
 
 ↓
@@ -263,7 +264,7 @@ Protected Controller
 
 ---
 
-# Job Application Request Flow
+# Job Application Flow
 
 ```
 Client
@@ -299,16 +300,148 @@ JobApplicationResponse
 
 ---
 
+# Dashboard Flow
+
+```
+Client
+
+↓
+
+GET /api/v1/dashboard
+
+↓
+
+DashboardController
+
+↓
+
+DashboardService
+
+↓
+
+JobApplicationRepository
+
+↓
+
+DashboardResponse
+```
+
+The dashboard calculates:
+
+- Total Applications
+- Applied
+- Interview
+- Offer
+- Rejected
+
+---
+
+# Search Flow
+
+```
+Client
+
+↓
+
+GET /jobs/search?keyword=
+
+↓
+
+Controller
+
+↓
+
+Repository
+
+↓
+
+Search Company
+
+OR
+
+Search Job Title
+
+↓
+
+Results
+```
+
+---
+
+# Filter Flow
+
+```
+Client
+
+↓
+
+GET /jobs/filter?status=
+
+↓
+
+Controller
+
+↓
+
+Repository
+
+↓
+
+Filter By JobStatus
+
+↓
+
+Results
+```
+
+---
+
+# Pagination Flow
+
+```
+Client
+
+↓
+
+GET /jobs?page=&size=
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+PageRequest
+
+↓
+
+Repository
+
+↓
+
+PostgreSQL
+
+↓
+
+Page<JobApplicationResponse>
+```
+
+---
+
 # Layer Responsibilities
 
 ## Controller Layer
 
 Responsible for:
 
-- Handling HTTP requests
-- Request validation
-- Returning API responses
-- Delegating business logic to services
+- HTTP Requests
+- Request Validation
+- API Responses
+- Delegating Business Logic
 
 ---
 
@@ -316,10 +449,13 @@ Responsible for:
 
 Responsible for:
 
-- Business logic
-- Ownership validation
-- CRUD operations
-- Coordination between repositories and mappers
+- Business Logic
+- CRUD Operations
+- Dashboard Analytics
+- Search
+- Filtering
+- Pagination
+- Ownership Validation
 
 ---
 
@@ -327,10 +463,12 @@ Responsible for:
 
 Responsible for:
 
-- Database interaction
-- CRUD operations
-- Custom queries
-- Data persistence
+- CRUD Operations
+- Custom Queries
+- Dashboard Counts
+- Search Queries
+- Pagination
+- Database Access
 
 ---
 
@@ -338,9 +476,9 @@ Responsible for:
 
 Responsible for:
 
-- Entity → DTO conversion
-- DTO → Entity mapping
-- Keeping controllers independent of database entities
+- Entity → DTO Conversion
+- DTO → Entity Mapping
+- Keeping Database Models Independent of API Models
 
 ---
 
@@ -348,11 +486,11 @@ Responsible for:
 
 Responsible for:
 
-- JWT validation
+- JWT Validation
 - Authentication
 - Authorization
-- Stateless security
-- Protected endpoints
+- Stateless Sessions
+- Protected Endpoints
 
 ---
 
@@ -369,29 +507,29 @@ Responsible for:
 
 ## Authorization
 
-Every `JobApplication` belongs to a specific authenticated user.
+Each JobApplication belongs to exactly one authenticated user.
 
 Ownership is enforced through repository methods:
 
 ```java
-findByUser(User user)
-
 findByIdAndUser(Long id, User user)
+
+findByUser(User user, Pageable pageable)
+
+findByUserAndStatus(User user, JobStatus status)
 ```
 
-This prevents users from accessing or modifying another user's data.
+This prevents users from viewing or modifying another user's applications.
 
 ---
 
 # API Convention
 
-All REST APIs follow versioning:
+All APIs follow versioning:
 
 ```
 /api/v1/...
 ```
-
-Current Endpoints:
 
 ## Authentication
 
@@ -399,6 +537,8 @@ Current Endpoints:
 POST /api/v1/auth/register
 POST /api/v1/auth/login
 ```
+
+---
 
 ## Job Applications
 
@@ -408,7 +548,20 @@ GET    /api/v1/jobs
 GET    /api/v1/jobs/{id}
 PUT    /api/v1/jobs/{id}
 DELETE /api/v1/jobs/{id}
+
+GET    /api/v1/jobs/search?keyword=
+GET    /api/v1/jobs/filter?status=
 ```
+
+---
+
+## Dashboard
+
+```
+GET /api/v1/dashboard
+```
+
+---
 
 ## Utility
 
@@ -428,22 +581,33 @@ GET /api/v1/test
 - User Registration
 - User Login
 - JWT Authentication
-- Spring Security Integration
+- Spring Security
 - Role-Based Authorization
 
 ### Job Application Module
 
-- Create Job Application
-- View All Job Applications
-- View Job Application by ID
-- Update Job Application
-- Delete Job Application
+- Create
+- Read
+- Update
+- Delete
+- Search
+- Filtering
+- Pagination
 - Ownership Enforcement
+
+### Dashboard Module
+
+- Total Applications
+- Applied Count
+- Interview Count
+- Offer Count
+- Rejected Count
 
 ### Backend Infrastructure
 
 - DTO Layer
 - Mapper Layer
+- Repository Pattern
 - Request Validation
 - Global Exception Handling
 - Swagger Documentation
@@ -453,16 +617,41 @@ GET /api/v1/test
 
 ## Planned
 
-- Dashboard Analytics
-- Search & Filtering
-- Pagination
-- Interview Management
-- Resume Management
-- Gmail Integration
-- Google Calendar Integration
-- LinkedIn Integration
-- AI Resume Analysis
-- AI Interview Preparation
+### React Frontend
+
+- Login
+- Registration
+- Dashboard
+- Job Management
+
+### Interview Management
+
+- Interview Tracking
+- Scheduling
+- Notes
+
+### Resume Management
+
+- Resume Upload
+- Resume Versioning
+
+### AI Features
+
+- Resume Analysis
+- Resume Matching
+- Interview Preparation
+
+### Integrations
+
+- Gmail
+- Google Calendar
+- LinkedIn
+
+### Deployment
+
+- Docker
+- CI/CD
+- Cloud Deployment
 
 ---
 
@@ -470,9 +659,9 @@ GET /api/v1/test
 
 ## Sprint 1
 
-Project Initialization
+Project Planning
 
-**Status:** ✅ Completed
+**Status:** Completed
 
 ---
 
@@ -480,77 +669,79 @@ Project Initialization
 
 Backend Foundation
 
-- Spring Boot Setup
-- PostgreSQL Configuration
-- Initial Project Structure
+- Spring Boot
+- PostgreSQL
+- Initial Architecture
 
-**Status:** ✅ Completed
+**Status:** Completed
 
 ---
 
 ## Sprint 3
 
-Authentication System
+Authentication
 
-- User Registration
-- Login
-- JWT Authentication
+- JWT
 - Spring Security
-- Swagger Integration
+- Registration
+- Login
+- Swagger
 
-**Status:** ✅ Completed
+**Status:** Completed
 
 ---
 
 ## Sprint 4
 
-Job Application CRUD
+Job Application Module
 
-- JobApplication Entity
-- Repository Layer
+- Entity
+- Repository
 - DTOs
 - Mapper
-- Service Layer
-- Controller Layer
-- Create
-- Read
-- Update
-- Delete
-- Ownership Enforcement
+- Service
+- Controller
+- CRUD
+- Ownership Validation
 
-**Status:** ✅ Completed
+**Status:** Completed
 
 ---
 
 ## Sprint 5
 
-Dashboard, Search & Filtering
+Dashboard & Analytics
 
-**Status:** 🚧 Next
+- Dashboard Statistics
+- Search
+- Filtering
+- Pagination
+
+**Status:** Completed
 
 ---
 
 ## Sprint 6
 
-Interview & Resume Management
+React Frontend
 
-**Status:** 📅 Planned
+**Status:** Next
 
 ---
 
 ## Sprint 7
 
-React Frontend
+Interview & Resume Management
 
-**Status:** 📅 Planned
+**Status:** Planned
 
 ---
 
 ## Sprint 8
 
-AI Features & External Integrations
+AI Features & Integrations
 
-**Status:** 📅 Planned
+**Status:** Planned
 
 ---
 
@@ -558,4 +749,4 @@ AI Features & External Integrations
 
 Deployment & Production Readiness
 
-**Status:** 📅 Planned
+**Status:** Planned

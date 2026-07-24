@@ -35,8 +35,20 @@ The project is being developed using modern software engineering practices, incl
 - View Job Application by ID
 - Update Job Applications
 - Delete Job Applications
+- Search by Company
+- Search by Job Title
+- Filter by Job Status
+- Pagination Support
 - User-specific Data Isolation
 - Job Status Tracking
+
+## Dashboard & Analytics
+
+- Total Applications
+- Applied Applications Count
+- Interview Applications Count
+- Offer Count
+- Rejected Applications Count
 
 ## Backend Infrastructure
 
@@ -46,6 +58,7 @@ The project is being developed using modern software engineering practices, incl
 - Spring Data JPA (Hibernate)
 - DTO-Based API Design
 - Mapper Layer
+- Repository Pattern
 - Global Exception Handling
 - Request Validation
 - Swagger / OpenAPI Documentation
@@ -54,19 +67,12 @@ The project is being developed using modern software engineering practices, incl
 
 # Planned Features
 
-## Dashboard & Analytics
+## React Frontend
 
-- Total Applications
-- Application Status Analytics
-- Interview Statistics
-- Career Progress Dashboard
-
-## Search & Filtering
-
-- Search by Company
-- Search by Job Title
-- Filter by Application Status
-- Pagination & Sorting
+- User Authentication Pages
+- Dashboard
+- Job Management Interface
+- Responsive Design
 
 ## Interview Management
 
@@ -209,10 +215,20 @@ OfferFlow
 | Method | Endpoint | Description |
 |---------|----------|-------------|
 | POST | `/api/v1/jobs` | Create a job application |
-| GET | `/api/v1/jobs` | Retrieve all job applications |
+| GET | `/api/v1/jobs` | Retrieve paginated job applications |
 | GET | `/api/v1/jobs/{id}` | Retrieve a specific job application |
 | PUT | `/api/v1/jobs/{id}` | Update a job application |
 | DELETE | `/api/v1/jobs/{id}` | Delete a job application |
+| GET | `/api/v1/jobs/search?keyword=` | Search by company or job title |
+| GET | `/api/v1/jobs/filter?status=` | Filter applications by status |
+
+---
+
+## Dashboard
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/api/v1/dashboard` | Retrieve application statistics |
 
 ---
 
@@ -229,15 +245,15 @@ OfferFlow
 
 | Sprint | Status |
 |---------|--------|
-| Sprint 1 – Project Setup | ✅ Completed |
-| Sprint 2 – Backend Foundation | ✅ Completed |
-| Sprint 3 – Authentication System | ✅ Completed |
-| Sprint 4 – Job Application CRUD | ✅ Completed |
-| Sprint 5 – Dashboard, Search & Filtering | 🚧 Next |
-| Sprint 6 – Interview Management | 📅 Planned |
-| Sprint 7 – React Frontend | 📅 Planned |
-| Sprint 8 – AI Features & Integrations | 📅 Planned |
-| Sprint 9 – Deployment & CI/CD | 📅 Planned |
+| Sprint 1 – Project Setup | Completed |
+| Sprint 2 – Backend Foundation | Completed |
+| Sprint 3 – Authentication System | Completed |
+| Sprint 4 – Job Application CRUD | Completed |
+| Sprint 5 – Dashboard, Search, Filtering & Pagination | Completed |
+| Sprint 6 – React Frontend | Next |
+| Sprint 7 – Interview Management | Planned |
+| Sprint 8 – AI Features & Integrations | Planned |
+| Sprint 9 – Deployment & CI/CD | Planned |
 
 ---
 
@@ -245,7 +261,7 @@ OfferFlow
 
 ## Current Version
 
-**Authentication & Job Application Module Complete**
+**Core Backend Complete**
 
 ### Completed
 
@@ -256,8 +272,13 @@ OfferFlow
 - User Registration
 - User Login
 - Complete Job Application CRUD
+- Dashboard Analytics
+- Search by Company & Job Title
+- Status Filtering
+- Pagination
 - DTO Layer
 - Mapper Layer
+- Repository Pattern
 - Global Exception Handling
 - Request Validation
 - Swagger Documentation
@@ -265,22 +286,27 @@ OfferFlow
 
 ### Currently Working On
 
-**Sprint 5 – Dashboard, Search, Filtering & Pagination**
+**Sprint 6 – React Frontend**
 
 ---
 
 # Future Enhancements
 
-- Dashboard with career analytics
-- Interview scheduling and tracking
-- Resume management
-- Email notifications
-- Google Calendar synchronization
-- AI-powered resume analysis
-- AI interview preparation
-- Docker support
-- CI/CD pipeline
-- Cloud deployment
+- Responsive React Frontend
+- Dashboard Charts & Visual Analytics
+- Interview Scheduling & Tracking
+- Resume Management
+- Email Notifications
+- Gmail Integration
+- Google Calendar Integration
+- LinkedIn Integration
+- AI Resume Analysis
+- AI Job Matching
+- AI Cover Letter Generation
+- AI Interview Preparation
+- Docker Support
+- CI/CD Pipeline
+- Cloud Deployment
 
 ---
 
@@ -299,4 +325,4 @@ VIT Vellore
 
 ---
 
-⭐ If you like this project, consider starring the repository!
+If you found this project useful or interesting, consider starring the repository.
