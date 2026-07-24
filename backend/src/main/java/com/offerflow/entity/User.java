@@ -16,7 +16,12 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,7 +54,13 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
+    @OneToMany(
+        mappedBy = "user",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    private List<JobApplication> jobApplications = new ArrayList<>();
     public User() {
     }
 
@@ -147,5 +158,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    
+    public List<JobApplication> getJobApplications() {
+    return jobApplications;
     }
 }
