@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import com.offerflow.dto.request.RegisterRequest;
 import com.offerflow.dto.response.AuthResponse;
 import com.offerflow.entity.User;
+import com.offerflow.exception.EmailAlreadyExistsException;
 import com.offerflow.repository.UserRepository;
 import com.offerflow.service.UserService;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     public AuthResponse registerUser(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already registered.");
+            throw new EmailAlreadyExistsException("Email already registered.");
         }
 
         User user = new User();
