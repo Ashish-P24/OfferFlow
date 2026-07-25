@@ -21,12 +21,18 @@ The backend is developed with Spring Boot and follows industry-standard software
 - JWT (JJWT)
 - Swagger / OpenAPI
 
-## Frontend *(Upcoming)*
+## Frontend
 
-- React
+- React 19
 - TypeScript
-- Vite
-- Tailwind CSS
+- Vite 8
+- Tailwind CSS v4
+- React Router
+- Axios
+- React Context API
+- React Hook Form
+- Zod
+- Lucide React
 
 ## Tools
 
@@ -45,28 +51,40 @@ The backend is developed with Spring Boot and follows industry-standard software
                     React Frontend
                            │
                            ▼
-                    REST API (Spring Boot)
+                    React Router
                            │
                            ▼
-                  Spring Security Filter
+                   Protected Routes
                            │
                            ▼
-                    JWT Authentication
+                  Authentication Context
                            │
                            ▼
-                     REST Controllers
+                      Axios Client
                            │
                            ▼
-                     Service Layer
+                 Spring Boot REST API
                            │
                            ▼
-                       Mapper Layer
+               Spring Security Filter
                            │
                            ▼
-                    Repository Layer
+                 JWT Authentication
                            │
                            ▼
-                       PostgreSQL
+                  REST Controllers
+                           │
+                           ▼
+                    Service Layer
+                           │
+                           ▼
+                     Mapper Layer
+                           │
+                           ▼
+                  Repository Layer
+                           │
+                           ▼
+                     PostgreSQL
 ```
 
 ---
@@ -105,6 +123,35 @@ com.offerflow
 ├── util
 │
 └── OfferFlowApplication
+```
+
+---
+
+# Frontend Structure
+
+```
+frontend
+│
+├── public
+│
+├── src
+│   ├── api
+│   ├── components
+│   ├── context
+│   ├── layouts
+│   ├── pages
+│   │   ├── auth
+│   │   └── dashboard
+│   ├── routes
+│   ├── services
+│   ├── types
+│   ├── assets
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+│
+├── package.json
+└── vite.config.ts
 ```
 
 ---
@@ -239,7 +286,15 @@ AuthResponse
 ## Protected Request
 
 ```
-Client
+Frontend
+
+↓
+
+Axios Request
+
+↓
+
+JWT Interceptor
 
 ↓
 
@@ -247,15 +302,15 @@ Authorization: Bearer <JWT>
 
 ↓
 
+Spring Security Filter
+
+↓
+
 JwtAuthenticationFilter
 
 ↓
 
-JwtService
-
-↓
-
-Spring Security Context
+Security Context
 
 ↓
 
@@ -303,7 +358,7 @@ JobApplicationResponse
 # Dashboard Flow
 
 ```
-Client
+Frontend
 
 ↓
 
@@ -324,6 +379,10 @@ JobApplicationRepository
 ↓
 
 DashboardResponse
+
+↓
+
+Dashboard Cards
 ```
 
 The dashboard calculates:
@@ -343,7 +402,7 @@ Client
 
 ↓
 
-GET /jobs/search?keyword=
+GET /api/v1/jobs/search?keyword=
 
 ↓
 
@@ -491,6 +550,7 @@ Responsible for:
 - Authorization
 - Stateless Sessions
 - Protected Endpoints
+- CORS Configuration
 
 ---
 
@@ -502,6 +562,21 @@ Responsible for:
 - BCrypt Password Hashing
 - Stateless Sessions
 - Spring Security Filter Chain
+
+---
+
+## Frontend Authentication
+
+Authentication is managed using:
+
+- React Context API
+- Local Storage
+- Protected Routes
+- Axios JWT Interceptor
+
+Every authenticated request automatically includes:
+
+Authorization: Bearer <JWT>
 
 ---
 
@@ -578,13 +653,28 @@ GET /api/v1/test
 
 ### Authentication
 
+Backend
+
 - User Registration
 - User Login
 - JWT Authentication
 - Spring Security
 - Role-Based Authorization
 
+Frontend
+
+- Login Page
+- Authentication Context
+- Protected Routes
+- JWT Storage
+- Logout
+- Axios JWT Interceptor
+
+---
+
 ### Job Application Module
+
+Backend
 
 - Create
 - Read
@@ -595,7 +685,17 @@ GET /api/v1/test
 - Pagination
 - Ownership Enforcement
 
+Frontend
+
+- Dashboard Integration
+- Job Service Layer
+- Backend Connectivity
+
+---
+
 ### Dashboard Module
+
+Backend
 
 - Total Applications
 - Applied Count
@@ -603,7 +703,17 @@ GET /api/v1/test
 - Offer Count
 - Rejected Count
 
-### Backend Infrastructure
+Frontend
+
+- Dashboard Page
+- Statistics Cards
+- Responsive Layout
+
+---
+
+### Infrastructure
+
+Backend
 
 - DTO Layer
 - Mapper Layer
@@ -612,28 +722,50 @@ GET /api/v1/test
 - Global Exception Handling
 - Swagger Documentation
 - PostgreSQL Integration
+- CORS Configuration
+
+Frontend
+
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- Sidebar
+- Navbar
+- Responsive Layout
 
 ---
 
 ## Planned
 
-### React Frontend
+### Applications Module
 
-- Login
-- Registration
-- Dashboard
-- Job Management
+- Applications Table
+- Search UI
+- Filter UI
+- Pagination UI
+- Create Application
+- Edit Application
+- Delete Application
+
+### Dashboard
+
+- Charts
+- Analytics
+- Activity Timeline
+
+### Resume Management
+
+- Resume Upload
+- Resume Versioning
 
 ### Interview Management
 
 - Interview Tracking
 - Scheduling
 - Notes
-
-### Resume Management
-
-- Resume Upload
-- Resume Versioning
 
 ### AI Features
 
@@ -650,6 +782,7 @@ GET /api/v1/test
 ### Deployment
 
 - Docker
+- GitHub Actions
 - CI/CD
 - Cloud Deployment
 
@@ -669,10 +802,6 @@ Project Planning
 
 Backend Foundation
 
-- Spring Boot
-- PostgreSQL
-- Initial Architecture
-
 **Status:** Completed
 
 ---
@@ -680,12 +809,6 @@ Backend Foundation
 ## Sprint 3
 
 Authentication
-
-- JWT
-- Spring Security
-- Registration
-- Login
-- Swagger
 
 **Status:** Completed
 
@@ -695,15 +818,6 @@ Authentication
 
 Job Application Module
 
-- Entity
-- Repository
-- DTOs
-- Mapper
-- Service
-- Controller
-- CRUD
-- Ownership Validation
-
 **Status:** Completed
 
 ---
@@ -712,34 +826,47 @@ Job Application Module
 
 Dashboard & Analytics
 
-- Dashboard Statistics
-- Search
-- Filtering
-- Pagination
-
 **Status:** Completed
 
 ---
 
 ## Sprint 6
 
-React Frontend
+Frontend Foundation
 
-**Status:** Next
+- React Setup
+- Authentication
+- Protected Routes
+- Dashboard
+- Sidebar
+- Navbar
+- Axios Integration
+
+**Status:** Completed
 
 ---
 
 ## Sprint 7
 
-Interview & Resume Management
+Applications Management
 
-**Status:** Planned
+- Applications Table
+- Search
+- Filter
+- Pagination
+- CRUD Operations
+
+**Status:** In Progress
 
 ---
 
 ## Sprint 8
 
-AI Features & Integrations
+Dashboard Enhancements
+
+- Charts
+- Analytics
+- Activity Timeline
 
 **Status:** Planned
 
@@ -747,6 +874,22 @@ AI Features & Integrations
 
 ## Sprint 9
 
-Deployment & Production Readiness
+Career Management
+
+- Resume Management
+- Interview Tracking
+
+**Status:** Planned
+
+---
+
+## Sprint 10
+
+Deployment & AI
+
+- AI Features
+- Docker
+- CI/CD
+- Cloud Deployment
 
 **Status:** Planned
