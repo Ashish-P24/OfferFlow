@@ -1,15 +1,23 @@
 package com.offerflow.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.offerflow.dto.request.CreateJobApplicationRequest;
+import com.offerflow.dto.request.UpdateJobApplicationRequest;
 import com.offerflow.dto.response.JobApplicationResponse;
 import com.offerflow.entity.JobStatus;
 import com.offerflow.entity.User;
 import com.offerflow.service.JobApplicationService;
-import com.offerflow.dto.request.UpdateJobApplicationRequest;
-import org.springframework.data.domain.Page;
 
 import jakarta.validation.Valid;
 
@@ -31,17 +39,6 @@ public class JobApplicationController {
             @AuthenticationPrincipal User user) {
 
         return jobApplicationService.createJobApplication(request, user);
-    }
-    @GetMapping
-    public Page<JobApplicationResponse> getJobApplications(
-            @AuthenticationPrincipal User user,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        return jobApplicationService.getJobApplications(
-                user,
-                page,
-                size);
     }
     @GetMapping("/{id}")
     public JobApplicationResponse getJobApplicationById(
@@ -68,22 +65,20 @@ public class JobApplicationController {
 
         jobApplicationService.deleteJobApplication(id, user);
     }
-    @GetMapping("/search")
-    public List<JobApplicationResponse> searchJobApplications(
-            @RequestParam String keyword,
-            @AuthenticationPrincipal User user) {
 
-        return jobApplicationService.searchJobApplications(
+    @GetMapping
+    public Page<JobApplicationResponse> getJobApplications(
+            @AuthenticationPrincipal User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) JobStatus status) {
+
+        return jobApplicationService.getJobApplications(
+                user,
+                page,
+                size,
                 keyword,
-                user);
-    }
-    @GetMapping("/filter")
-    public List<JobApplicationResponse> filterJobApplications(
-            @RequestParam JobStatus status,
-            @AuthenticationPrincipal User user) {
-
-        return jobApplicationService.filterJobApplications(
-                status,
-                user);
+                status);
     }
 }

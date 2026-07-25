@@ -1,7 +1,7 @@
 package com.offerflow.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.offerflow.dto.request.CreateJobApplicationRequest;
@@ -14,8 +14,6 @@ import com.offerflow.exception.JobApplicationNotFoundException;
 import com.offerflow.mapper.JobApplicationMapper;
 import com.offerflow.repository.JobApplicationRepository;
 import com.offerflow.service.JobApplicationService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 @Service
 public class JobApplicationServiceImpl implements JobApplicationService {
@@ -46,10 +44,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         job.setStatus(request.getStatus());
         job.setApplicationDate(request.getApplicationDate());
         job.setNotes(request.getNotes());
-
         job.setUser(user);
 
-        JobApplication savedJob = jobApplicationRepository.save(job);
+        JobApplication savedJob =
+                jobApplicationRepository.save(job);
 
         return jobApplicationMapper.toResponse(savedJob);
     }
@@ -58,12 +56,59 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     public Page<JobApplicationResponse> getJobApplications(
             User user,
             int page,
-            int size) {
+            int size,
+            String keyword,
+            JobStatus status) {
 
-        Page<JobApplication> jobs =
-                jobApplicationRepository.findByUser(
-                        user,
-                        PageRequest.of(page, size));
+        PageRequest pageable = PageRequest.of(page, size);
+
+        Page<JobApplication> jobs;
+
+        boolean hasKeyword =
+                keyword != null && !keyword.isBlank();
+
+        boolean hasStatus =
+                status != null;
+
+        if (!hasKeyword && !hasStatus) {
+
+            jobs = jobApplicationRepository.findByUser(
+                    user,
+                    pageable);
+
+        } else if (hasKeyword && !hasStatus) {
+
+            jobs =
+                    jobApplicationRepository
+                            .findByUserAndCompanyContainingIgnoreCaseOrUserAndJobTitleContainingIgnoreCase(
+                                    user,
+                                    keyword,
+                                    user,
+                                    keyword,
+                                    pageable);
+
+        } else if (!hasKeyword) {
+
+            jobs =
+                    jobApplicationRepository
+                            .findByUserAndStatus(
+                                    user,
+                                    status,
+                                    pageable);
+
+        } else {
+
+            jobs =
+                    jobApplicationRepository
+                            .findByUserAndStatusAndCompanyContainingIgnoreCaseOrUserAndStatusAndJobTitleContainingIgnoreCase(
+                                    user,
+                                    status,
+                                    keyword,
+                                    user,
+                                    status,
+                                    keyword,
+                                    pageable);
+        }
 
         return jobs.map(jobApplicationMapper::toResponse);
     }
@@ -73,7 +118,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             Long id,
             User user) {
 
-        JobApplication job = findJobApplication(id, user);
+        JobApplication job =
+                findJobApplication(id, user);
 
         return jobApplicationMapper.toResponse(job);
     }
@@ -84,7 +130,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             UpdateJobApplicationRequest request,
             User user) {
 
-        JobApplication job = findJobApplication(id, user);
+        JobApplication job =
+                findJobApplication(id, user);
 
         job.setCompany(request.getCompany());
         job.setJobTitle(request.getJobTitle());
@@ -106,38 +153,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             Long id,
             User user) {
 
-        JobApplication job = findJobApplication(id, user);
+        JobApplication job =
+                findJobApplication(id, user);
 
         jobApplicationRepository.delete(job);
-    }
-
-    @Override
-    public List<JobApplicationResponse> searchJobApplications(
-            String keyword,
-            User user) {
-
-        List<JobApplication> jobs =
-                jobApplicationRepository
-                        .findByUserAndCompanyContainingIgnoreCaseOrUserAndJobTitleContainingIgnoreCase(
-                                user,
-                                keyword,
-                                user,
-                                keyword);
-
-        return jobApplicationMapper.toResponseList(jobs);
-    }
-
-    @Override
-    public List<JobApplicationResponse> filterJobApplications(
-            JobStatus status,
-            User user) {
-
-        List<JobApplication> jobs =
-                jobApplicationRepository.findByUserAndStatus(
-                        user,
-                        status);
-
-        return jobApplicationMapper.toResponseList(jobs);
     }
 
     private JobApplication findJobApplication(

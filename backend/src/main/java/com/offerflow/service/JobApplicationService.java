@@ -1,7 +1,5 @@
 package com.offerflow.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 
 import com.offerflow.dto.request.CreateJobApplicationRequest;
@@ -19,7 +17,9 @@ public interface JobApplicationService {
     Page<JobApplicationResponse> getJobApplications(
             User user,
             int page,
-            int size);
+            int size,
+            String keyword,
+            JobStatus status);
 
     JobApplicationResponse getJobApplicationById(
             Long id,
@@ -32,13 +32,5 @@ public interface JobApplicationService {
 
     void deleteJobApplication(
             Long id,
-            User user);
-
-    List<JobApplicationResponse> searchJobApplications(
-            String company,
-            User user);
-
-    List<JobApplicationResponse> filterJobApplications(
-            JobStatus status,
             User user);
 }
