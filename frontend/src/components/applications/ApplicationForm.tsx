@@ -38,6 +38,9 @@ export default function ApplicationForm({
       initialValues ?? defaultForm,
     );
 
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+
   useEffect(() => {
     setForm(initialValues ?? defaultForm);
   }, [initialValues]);
@@ -47,7 +50,13 @@ export default function ApplicationForm({
   ) {
     e.preventDefault();
 
-    await onSubmit(form);
+    try {
+      setIsSubmitting(true);
+
+      await onSubmit(form);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function update<K extends keyof ApplicationRequest>(
@@ -162,20 +171,28 @@ export default function ApplicationForm({
       />
 
       <div className="flex justify-end gap-3">
+
         <button
           type="button"
+          disabled={isSubmitting}
           onClick={onCancel}
-          className="rounded-lg border border-slate-300 px-5 py-2"
+          className="rounded-lg border border-slate-300 px-5 py-2 disabled:opacity-50"
         >
           Cancel
         </button>
 
         <button
           type="submit"
-          className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700"
+          disabled={isSubmitting}
+          className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {submitLabel}
+          {isSubmitting
+            ? submitLabel === "Update Application"
+              ? "Updating..."
+              : "Saving..."
+            : submitLabel}
         </button>
+
       </div>
     </form>
   );

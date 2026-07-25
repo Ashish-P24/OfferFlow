@@ -4,9 +4,11 @@ import ApplicationToolbar from "@/components/applications/ApplicationToolbar";
 import ApplicationsTable from "@/components/applications/ApplicationsTable";
 import ApplicationModal from "@/components/applications/ApplicationModal";
 import ApplicationForm from "@/components/applications/ApplicationForm";
-
+import toast from "react-hot-toast";
 import DeleteDialog from "@/components/applications/DeleteDialog";
-
+import Spinner from "@/components/ui/Spinner";
+import EmptyState from "@/components/ui/EmptyState";
+import Pagination from "@/components/ui/Pagination";
 import {
   createApplication,
   updateApplication,
@@ -39,19 +41,22 @@ export default function Applications() {
     useState<JobApplication | null>(null);
 
     async function handleDeleteApplication() {
-    if (!selectedApplication) return;
+      if (!selectedApplication) return;
 
-    try {
+      try {
         await deleteApplication(selectedApplication.id);
+
+        toast.success("Application deleted successfully.");
 
         setDeleteDialogOpen(false);
         setSelectedApplication(null);
+        setEditingApplication(null);
 
         await loadApplications();
-    } catch (error) {
+      } catch (error) {
         console.error(error);
-        alert("Failed to delete application.");
-    }
+        toast.error("Failed to delete application.");
+      }
     }
 
   async function loadApplications() {
@@ -83,6 +88,7 @@ export default function Applications() {
   ) {
     try {
       await createApplication(request);
+      toast.success("Application created successfully.");
       setEditingApplication(null);
 
       setOpenModal(false);
@@ -90,7 +96,7 @@ export default function Applications() {
       await loadApplications();
     } catch (error) {
       console.error(error);
-      alert("Failed to create application.");
+      toast.error("Failed to create application.");
     }
   }
 
@@ -104,6 +110,7 @@ export default function Applications() {
         editingApplication.id,
         request,
       );
+      toast.success("Application updated successfully.");
 
       setEditingApplication(null);
       setOpenModal(false);
@@ -111,7 +118,7 @@ export default function Applications() {
       await loadApplications();
     } catch (error) {
       console.error(error);
-      alert("Failed to update application.");
+      toast.error("Failed to update application.");
     }
   }
 
@@ -153,40 +160,42 @@ export default function Applications() {
         }}
       />
 
-      <ApplicationsTable
-        applications={applications}
-        loading={loading}
-        onEdit={(application) => {
-            setEditingApplication(application);
+      {loading ? (
+        <Spinner text="Loading applications..." />
+      ) : applications.length === 0 ? (
+        <EmptyState
+          title="No applications yet"
+          description="Start tracking your job applications."
+          actionLabel="Add Application"
+          onAction={() => {
+            setEditingApplication(null);
+            setSelectedApplication(null);
             setOpenModal(true);
-        }}
-        onDelete={(application) => {
-            setSelectedApplication(application);
-            setDeleteDialogOpen(true);
-        }}
+          }}
         />
+      ) : (
+        <>
+          <ApplicationsTable
+            applications={applications}
+            onEdit={(application) => {
+              setEditingApplication(application);
+              setOpenModal(true);
+            }}
+            onDelete={(application) => {
+              setEditingApplication(null);
+              setSelectedApplication(application);
+              setDeleteDialogOpen(true);
+            }}
+          />
 
-      <div className="mt-6 flex items-center justify-between">
-        <button
-          disabled={page === 0}
-          onClick={() => setPage((p) => p - 1)}
-          className="rounded-lg border border-slate-300 px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Previous
-        </button>
-
-        <span className="text-sm text-slate-600">
-          Page {page + 1} of {Math.max(totalPages, 1)}
-        </span>
-
-        <button
-          disabled={page + 1 >= totalPages}
-          onClick={() => setPage((p) => p + 1)}
-          className="rounded-lg border border-slate-300 px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPrevious={() => setPage((p) => p - 1)}
+            onNext={() => setPage((p) => p + 1)}
+          />
+        </>
+      )}
 
       <ApplicationModal
         open={openModal}
@@ -197,6 +206,7 @@ export default function Applications() {
         }
         onClose={() => {
           setEditingApplication(null);
+          setSelectedApplication(null);
           setOpenModal(false);
         }}
       >

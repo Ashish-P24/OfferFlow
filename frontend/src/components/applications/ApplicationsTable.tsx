@@ -6,15 +6,12 @@ import type { JobApplication } from "@/types/application";
 
 interface ApplicationsTableProps {
   applications: JobApplication[];
-  loading: boolean;
-
   onEdit: (application: JobApplication) => void;
   onDelete: (application: JobApplication) => void;
 }
 
 export default function ApplicationsTable({
   applications,
-  loading,
   onEdit,
   onDelete,
 }: ApplicationsTableProps) {
@@ -34,73 +31,54 @@ export default function ApplicationsTable({
         </thead>
 
         <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan={7} className="py-12 text-center">
-                Loading...
+          {applications.map((job) => (
+            <tr
+              key={job.id}
+              className="border-t transition hover:bg-slate-50"
+            >
+              <td className="px-6 py-4 font-medium">
+                {job.company}
+              </td>
+
+              <td className="px-6 py-4">
+                {job.jobTitle}
+              </td>
+
+              <td className="px-6 py-4">
+                {job.location}
+              </td>
+
+              <td className="px-6 py-4">
+                {job.salary}
+              </td>
+
+              <td className="px-6 py-4">
+                <StatusBadge status={job.status} />
+              </td>
+
+              <td className="px-6 py-4">
+                {new Date(job.applicationDate).toLocaleDateString()}
+              </td>
+
+              <td className="px-6 py-4">
+                <div className="flex justify-center gap-2">
+                  <button
+                    onClick={() => onEdit(job)}
+                    className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600"
+                  >
+                    <Pencil size={18} />
+                  </button>
+
+                  <button
+                    onClick={() => onDelete(job)}
+                    className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-red-600"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </td>
             </tr>
-          ) : applications.length === 0 ? (
-            <tr>
-              <td
-                colSpan={7}
-                className="py-12 text-center text-slate-500"
-              >
-                No applications found.
-              </td>
-            </tr>
-          ) : (
-            applications.map((job) => (
-              <tr
-                key={job.id}
-                className="border-t transition hover:bg-slate-50"
-              >
-                <td className="px-6 py-4 font-medium">
-                  {job.company}
-                </td>
-
-                <td className="px-6 py-4">
-                  {job.jobTitle}
-                </td>
-
-                <td className="px-6 py-4">
-                  {job.location}
-                </td>
-
-                <td className="px-6 py-4">
-                  {job.salary}
-                </td>
-
-                <td className="px-6 py-4">
-                  <StatusBadge status={job.status} />
-                </td>
-
-                <td className="px-6 py-4">
-                  {new Date(job.applicationDate).toLocaleDateString()}
-                </td>
-
-                <td className="px-6 py-4">
-                  <div className="flex justify-center gap-2">
-
-                    <button
-                      onClick={() => onEdit(job)}
-                      className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600"
-                    >
-                      <Pencil size={18} />
-                    </button>
-
-                    <button
-                      onClick={() => onDelete(job)}
-                      className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-red-600"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-
-                  </div>
-                </td>
-              </tr>
-            ))
-          )}
+          ))}
         </tbody>
       </table>
     </div>

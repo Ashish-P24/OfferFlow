@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface DeleteDialogProps {
   open: boolean;
 
@@ -7,7 +9,7 @@ interface DeleteDialogProps {
 
   onCancel: () => void;
 
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
 }
 
 export default function DeleteDialog({
@@ -17,7 +19,20 @@ export default function DeleteDialog({
   onCancel,
   onDelete,
 }: DeleteDialogProps) {
+  const [isDeleting, setIsDeleting] =
+    useState(false);
+
   if (!open) return null;
+
+  async function handleDelete() {
+    try {
+      setIsDeleting(true);
+
+      await onDelete();
+    } finally {
+      setIsDeleting(false);
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -25,18 +40,15 @@ export default function DeleteDialog({
       <div className="w-full max-w-md rounded-xl bg-white shadow-xl">
 
         <div className="border-b px-6 py-4">
-
           <h2 className="text-xl font-semibold">
             Delete Application
           </h2>
-
         </div>
 
         <div className="space-y-4 p-6">
 
           <p className="text-slate-600">
-            Are you sure you want to delete
-            this application?
+            Are you sure you want to delete this application?
           </p>
 
           <div className="rounded-lg bg-slate-100 p-4">
@@ -54,17 +66,23 @@ export default function DeleteDialog({
           <div className="flex justify-end gap-3">
 
             <button
+              type="button"
+              disabled={isDeleting}
               onClick={onCancel}
-              className="rounded-lg border border-slate-300 px-5 py-2"
+              className="rounded-lg border border-slate-300 px-5 py-2 disabled:opacity-50"
             >
               Cancel
             </button>
 
             <button
-              onClick={onDelete}
-              className="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700"
+              type="button"
+              disabled={isDeleting}
+              onClick={handleDelete}
+              className="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Delete
+              {isDeleting
+                ? "Deleting..."
+                : "Delete"}
             </button>
 
           </div>

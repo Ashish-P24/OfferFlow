@@ -1,5 +1,6 @@
 package com.offerflow.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ import com.offerflow.entity.User;
 
 public interface JobApplicationRepository
         extends JpaRepository<JobApplication, Long> {
+
+    List<JobApplication> findByUser(User user);
 
     Page<JobApplication> findByUser(
             User user,
