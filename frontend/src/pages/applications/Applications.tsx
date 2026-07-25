@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
 
-import ApplicationToolbar from "./ApplicationToolbar";
-import StatusBadge from "@/components/ui/StatusBadge";
+import ApplicationToolbar from "@/components/applications/ApplicationToolbar";
+import ApplicationsTable from "@/components/applications/ApplicationsTable";
+import ApplicationModal from "@/components/applications/ApplicationModal";
+import ApplicationForm from "@/components/applications/ApplicationForm";
 
-import { getApplications } from "@/services/applicationService";
+import DeleteDialog from "@/components/applications/DeleteDialog";
+
+import {
+  createApplication,
+  updateApplication,
+  deleteApplication,
+  getApplications,
+} from "@/services/applicationService";
 
 import type { JobApplication } from "@/types/application";
+import type { ApplicationRequest } from "@/types/applicationRequest";
 
 export default function Applications() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -16,8 +25,34 @@ export default function Applications() {
   const [status, setStatus] = useState("");
 
   const [page, setPage] = useState(0);
-
   const [totalPages, setTotalPages] = useState(0);
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const [editingApplication, setEditingApplication] =
+    useState<JobApplication | null>(null);
+
+    const [deleteDialogOpen, setDeleteDialogOpen] =
+    useState(false);
+
+    const [selectedApplication, setSelectedApplication] =
+    useState<JobApplication | null>(null);
+
+    async function handleDeleteApplication() {
+    if (!selectedApplication) return;
+
+    try {
+        await deleteApplication(selectedApplication.id);
+
+        setDeleteDialogOpen(false);
+        setSelectedApplication(null);
+
+        await loadApplications();
+    } catch (error) {
+        console.error(error);
+        alert("Failed to delete application.");
+    }
+    }
 
   async function loadApplications() {
     try {
@@ -43,6 +78,43 @@ export default function Applications() {
     loadApplications();
   }, [page, search, status]);
 
+  async function handleCreateApplication(
+    request: ApplicationRequest,
+  ) {
+    try {
+      await createApplication(request);
+      setEditingApplication(null);
+
+      setOpenModal(false);
+
+      await loadApplications();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create application.");
+    }
+  }
+
+  async function handleUpdateApplication(
+    request: ApplicationRequest,
+  ) {
+    if (!editingApplication) return;
+
+    try {
+      await updateApplication(
+        editingApplication.id,
+        request,
+      );
+
+      setEditingApplication(null);
+      setOpenModal(false);
+
+      await loadApplications();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update application.");
+    }
+  }
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
@@ -56,7 +128,14 @@ export default function Applications() {
           </p>
         </div>
 
-        <button className="rounded-lg bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700">
+        <button
+          onClick={() => {
+            setEditingApplication(null);
+            setSelectedApplication(null);
+            setOpenModal(true);
+            }}
+          className="rounded-lg bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700"
+        >
           + Add Application
         </button>
       </div>
@@ -74,94 +153,18 @@ export default function Applications() {
         }}
       />
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="w-full">
-          <thead className="bg-slate-50">
-            <tr className="text-left text-sm text-slate-600">
-              <th className="px-6 py-4">Company</th>
-              <th className="px-6 py-4">Position</th>
-              <th className="px-6 py-4">Location</th>
-              <th className="px-6 py-4">Salary</th>
-              <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4">Applied</th>
-              <th className="px-6 py-4 text-center">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={7}
-                  className="py-12 text-center"
-                >
-                  Loading...
-                </td>
-              </tr>
-            ) : applications.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={7}
-                  className="py-12 text-center text-slate-500"
-                >
-                  No applications found.
-                </td>
-              </tr>
-            ) : (
-              applications.map((job) => (
-                <tr
-                  key={job.id}
-                  className="border-t transition hover:bg-slate-50"
-                >
-                  <td className="px-6 py-4 font-medium">
-                    {job.company}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    {job.jobTitle}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    {job.location}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    {job.salary}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    <StatusBadge status={job.status} />
-                  </td>
-
-                  <td className="px-6 py-4">
-                    {new Date(
-                      job.applicationDate,
-                    ).toLocaleDateString()}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-blue-600"
-                        title="Edit"
-                      >
-                        <Pencil size={18} />
-                      </button>
-
-                      <button
-                        className="rounded-md p-2 text-slate-500 transition hover:bg-slate-100 hover:text-red-600"
-                        title="Delete"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <ApplicationsTable
+        applications={applications}
+        loading={loading}
+        onEdit={(application) => {
+            setEditingApplication(application);
+            setOpenModal(true);
+        }}
+        onDelete={(application) => {
+            setSelectedApplication(application);
+            setDeleteDialogOpen(true);
+        }}
+        />
 
       <div className="mt-6 flex items-center justify-between">
         <button
@@ -184,6 +187,62 @@ export default function Applications() {
           Next
         </button>
       </div>
+
+      <ApplicationModal
+        open={openModal}
+        title={
+          editingApplication
+            ? "Edit Application"
+            : "Add New Application"
+        }
+        onClose={() => {
+          setEditingApplication(null);
+          setOpenModal(false);
+        }}
+      >
+        <ApplicationForm
+          initialValues={
+            editingApplication
+              ? {
+                  company: editingApplication.company,
+                  jobTitle: editingApplication.jobTitle,
+                  location: editingApplication.location,
+                  jobUrl: editingApplication.jobUrl,
+                  salary: editingApplication.salary,
+                  status: editingApplication.status,
+                  applicationDate:
+                    editingApplication.applicationDate,
+                  notes: editingApplication.notes,
+                }
+              : undefined
+          }
+          submitLabel={
+            editingApplication
+              ? "Update Application"
+              : "Save Application"
+          }
+          onSubmit={
+            editingApplication
+              ? handleUpdateApplication
+              : handleCreateApplication
+          }
+          onCancel={() => {
+            setEditingApplication(null);
+            setOpenModal(false);
+          }}
+        />
+      </ApplicationModal>
+      <DeleteDialog
+        open={deleteDialogOpen}
+        company={selectedApplication?.company ?? ""}
+        jobTitle={selectedApplication?.jobTitle ?? ""}
+        onCancel={() => {
+            setDeleteDialogOpen(false);
+            setSelectedApplication(null);
+            setEditingApplication(null);
+        }}
+        onDelete={handleDeleteApplication}
+        />
     </div>
   );
 }

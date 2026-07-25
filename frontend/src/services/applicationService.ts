@@ -1,5 +1,7 @@
 import api from "@/api/axios";
+
 import type { JobApplication } from "@/types/application";
+import type { ApplicationRequest } from "@/types/applicationRequest";
 
 export interface PageResponse<T> {
   content: T[];
@@ -34,4 +36,33 @@ export async function getApplications({
   });
 
   return response.data;
+}
+
+export async function createApplication(
+  request: ApplicationRequest,
+) {
+  const response = await api.post<JobApplication>(
+    "/jobs",
+    request,
+  );
+
+  return response.data;
+}
+
+export async function updateApplication(
+  id: number,
+  request: ApplicationRequest,
+) {
+  const response = await api.put<JobApplication>(
+    `/jobs/${id}`,
+    request,
+  );
+
+  return response.data;
+}
+
+export async function deleteApplication(
+  id: number,
+) {
+  await api.delete(`/jobs/${id}`);
 }

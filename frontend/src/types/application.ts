@@ -1,3 +1,9 @@
+export type JobStatus =
+  | "APPLIED"
+  | "INTERVIEW"
+  | "OFFER"
+  | "REJECTED";
+
 export interface JobApplication {
   id: number;
 
@@ -11,7 +17,7 @@ export interface JobApplication {
 
   salary: string;
 
-  status: string;
+  status: JobStatus;
 
   applicationDate: string;
 
