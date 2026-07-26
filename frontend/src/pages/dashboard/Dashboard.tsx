@@ -1,30 +1,78 @@
 import { useEffect, useState } from "react";
+import DashboardStatCard from "@/components/dashboard/DashboardStatCard";
+
+import {
+  BriefcaseBusiness,
+  CalendarDays,
+  CircleX,
+  Send,
+  Trophy,
+} from "lucide-react";
 
 import { getDashboard } from "@/services/dashboardService";
+import { getInterviews } from "@/services/interviewService";
+import { downloadResume, getResume } from "@/services/resumeService";
+
+import Spinner from "@/components/ui/Spinner";
+
 import type { DashboardResponse } from "@/types/dashboard";
+import type { Interview } from "@/types/interview";
+import type { Resume } from "@/types/resume";
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardResponse | null>(null);
+  const [stats, setStats] =
+      useState<DashboardResponse | null>(null);
+
+  const [interviews, setInterviews] =
+      useState<Interview[]>([]);
+
+  const [resume, setResume] =
+      useState<Resume | null>(null);
+
+  const [loading, setLoading] =
+      useState(true);
 
   useEffect(() => {
     async function loadDashboard() {
       try {
-        const data = await getDashboard();
-        setStats(data);
+        setLoading(true);
+
+        const [
+          dashboard,
+          interviews,
+        ] = await Promise.all([
+          getDashboard(),
+          getInterviews(),
+        ]);
+
+        setStats(dashboard);
+        setInterviews(interviews);
+
+        try {
+          const resume =
+            await getResume();
+
+          setResume(resume);
+        } catch {
+          setResume(null);
+        }
+
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     }
 
     loadDashboard();
   }, []);
 
-  if (!stats) {
-    return (
-      <div className="text-lg">
-        Loading...
-      </div>
-    );
+  if (loading || !stats) {
+  return (
+      <Spinner
+        text="Loading dashboard..."
+      />
+  );
   }
 
   const cards = [
@@ -53,35 +101,162 @@ export default function Dashboard() {
   return (
     <div>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">
-          Dashboard
-        </h1>
+      <h1 className="text-4xl font-bold">
+        Welcome back!
+      </h1>
 
-        <p className="mt-2 text-[var(--muted)]">
-          Overview of your applications.
-        </p>
+      <p className="mt-3 text-lg text-[var(--muted)]">
+        Here's an overview of your job search progress.
+      </p>
+
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5">
+
+      <DashboardStatCard
+        title="Applications"
+        value={stats.totalApplications}
+        icon={<BriefcaseBusiness size={22} />}
+      />
+
+      <DashboardStatCard
+        title="Applied"
+        value={stats.applied}
+        icon={<Send size={22} />}
+      />
+
+      <DashboardStatCard
+        title="Interview"
+        value={stats.interview}
+        icon={<CalendarDays size={22} />}
+      />
+
+      <DashboardStatCard
+        title="Offers"
+        value={stats.offer}
+        icon={<Trophy size={22} />}
+      />
+
+      <DashboardStatCard
+        title="Rejected"
+        value={stats.rejected}
+        icon={<CircleX size={22} />}
+      />
+
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5">
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
 
-        {cards.map((card) => (
-          <div
-            key={card.title}
-            className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm"
-          >
-            <p className="text-sm text-[var(--muted)]">
-              {card.title}
-            </p>
+        {/* Upcoming Interviews */}
 
-            <h2 className="mt-3 text-4xl font-bold">
-              {card.value}
-            </h2>
-          </div>
-        ))}
+        <div>
+
+          <h2 className="mb-4 text-2xl font-semibold">
+            Upcoming Interviews
+          </h2>
+
+          {interviews.length === 0 ? (
+
+            <div className="rounded-xl border border-[var(--border)] bg-white p-6 text-[var(--muted)]">
+              No interviews scheduled.
+            </div>
+
+          ) : (
+
+            <div className="space-y-4">
+
+              {interviews.slice(0, 3).map((interview) => (
+
+                <div
+                  key={interview.id}
+                  className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm"
+                >
+
+                  <h3 className="text-xl font-semibold">
+                    {interview.company}
+                  </h3>
+
+                  <p className="mt-1 text-sm text-[var(--muted)]">
+                    {interview.round}
+                  </p>
+
+                  <p className="mt-2">
+                    {new Date(
+                      interview.interviewDate,
+                    ).toLocaleDateString()}
+
+                    {interview.interviewTime
+                      ? ` • ${interview.interviewTime}`
+                      : " • Time TBD"}
+                  </p>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          )}
+
+        </div>
+
+        {/* Resume */}
+
+        <div>
+
+          <h2 className="mb-4 text-2xl font-semibold">
+            Resume
+          </h2>
+
+          {resume ? (
+
+            <div className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm">
+
+            <div className="flex items-center gap-3">
+
+              <div className="rounded-lg bg-red-100 p-3">
+                PDF
+              </div>
+
+              <div>
+
+                <h3 className="font-semibold">
+                  {resume.fileName}
+                </h3>
+
+                <p className="text-sm text-[var(--muted)]">
+                  Resume
+                </p>
+
+              </div>
+
+            </div>
+
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Uploaded{" "}
+                {new Date(
+                  resume.uploadedAt,
+                ).toLocaleDateString()}
+              </p>
+
+              <button
+                onClick={downloadResume}
+                className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              >
+                Download Resume
+              </button>
+
+            </div>
+
+          ) : (
+
+            <div className="rounded-xl border border-[var(--border)] bg-white p-5 text-[var(--muted)]">
+              No resume uploaded.
+            </div>
+
+          )}
+
+        </div>
 
       </div>
-
     </div>
   );
 }

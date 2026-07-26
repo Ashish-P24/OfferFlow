@@ -19,6 +19,8 @@ public interface InterviewRepository
         FROM Interview i
         JOIN FETCH i.jobApplication
         WHERE i.jobApplication.user = :user
+        ORDER BY i.interviewDate ASC,
+                i.interviewTime ASC
         """)
     List<Interview> findByJobApplicationUser(
             @Param("user") User user);

@@ -36,24 +36,38 @@ export async function deleteResume() {
 }
 
 export async function downloadResume() {
-  const response =
-    await api.get(
-      "/resume/download",
-      {
-        responseType: "blob",
-      },
-    );
+  const response = await api.get(
+    "/resume/download",
+    {
+      responseType: "blob",
+    },
+  );
 
-  const url =
-    window.URL.createObjectURL(
-      response.data,
-    );
+  const url = window.URL.createObjectURL(
+    response.data,
+  );
 
   const link =
     document.createElement("a");
 
+  const disposition =
+    response.headers["content-disposition"];
+
+  let fileName = "resume.pdf";
+
+  if (disposition) {
+    const match =
+      disposition.match(
+        /filename="(.+)"/,
+      );
+
+    if (match) {
+      fileName = match[1];
+    }
+  }
+
   link.href = url;
-  link.download = "resume.pdf";
+  link.download = fileName;
 
   document.body.appendChild(link);
 
