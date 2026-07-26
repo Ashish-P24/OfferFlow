@@ -1,5 +1,5 @@
 import type { Profile } from "@/types/profile";
-
+import Card from "@/components/ui/Card";
 interface ProfileCardProps {
   profile: Profile;
 }
@@ -8,7 +8,7 @@ export default function ProfileCard({
   profile,
 }: ProfileCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+    <Card>
 
       <h2 className="mb-4 text-xl font-semibold">
         Profile
@@ -54,6 +54,6 @@ export default function ProfileCard({
 
       </div>
 
-    </div>
+    </Card>
   );
 }

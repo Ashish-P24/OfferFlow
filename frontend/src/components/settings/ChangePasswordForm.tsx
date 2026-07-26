@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import Card from "@/components/ui/Card";
 import { changePassword } from "@/services/profileService";
 
 export default function ChangePasswordForm() {
@@ -64,7 +64,7 @@ export default function ChangePasswordForm() {
   }
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+    <Card>
 
       <h2 className="mb-4 text-xl font-semibold">
         Change Password
@@ -132,6 +132,6 @@ export default function ChangePasswordForm() {
 
       </form>
 
-    </div>
+    </Card>
   );
 }

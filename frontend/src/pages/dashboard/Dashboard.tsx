@@ -24,6 +24,8 @@ import Spinner from "@/components/ui/Spinner";
 import type { DashboardResponse } from "@/types/dashboard";
 import type { Interview } from "@/types/interview";
 import type { Resume } from "@/types/resume";
+import PageHeader from "@/components/ui/PageHeader";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function Dashboard() {
   const [stats, setStats] =
@@ -114,16 +116,13 @@ export default function Dashboard() {
   return (
     <div>
 
-      <h1 className="text-4xl font-bold">
-        Welcome back!
-      </h1>
-
-      <p className="mt-3 text-lg text-[var(--muted)]">
-        Here's an overview of your job search progress.
-      </p>
+    <PageHeader
+      title="Welcome back!"
+      description="Here's an overview of your job search progress."
+    />
 
       <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5">
-
+      
       <DashboardStatCard
         title="Applications"
         value={stats.totalApplications}
@@ -156,7 +155,26 @@ export default function Dashboard() {
 
       </div>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+    {analytics && (
+
+      <div className="mt-10 grid grid-cols-1 gap-8 xl:grid-cols-2">
+
+        <StatusChart
+          applied={analytics.applied}
+          interview={analytics.interview}
+          offer={analytics.offer}
+          rejected={analytics.rejected}
+        />
+
+        <MonthlyChart
+          data={analytics.monthlyApplications}
+        />
+
+      </div>
+
+    )}
+
+    <div className="mt-10 grid gap-6 lg:grid-cols-2">
 
         {/* Upcoming Interviews */}
 
@@ -197,7 +215,12 @@ export default function Dashboard() {
                     ).toLocaleDateString()}
 
                     {interview.interviewTime
-                      ? ` • ${interview.interviewTime}`
+                      ? ` • ${new Date(
+                          `1970-01-01T${interview.interviewTime}`,
+                        ).toLocaleTimeString([], {
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}`
                       : " • Time TBD"}
                   </p>
 
@@ -261,33 +284,16 @@ export default function Dashboard() {
 
           ) : (
 
-            <div className="rounded-xl border border-[var(--border)] bg-white p-5 text-[var(--muted)]">
-              No resume uploaded.
-            </div>
+          <EmptyState
+            title="No resume uploaded"
+            description="Upload your resume from the Resume page."
+          />
 
           )}
 
         </div>
 
       </div>
-      {analytics && (
-
-      <div className="mt-10 grid grid-cols-1 gap-8 xl:grid-cols-2">
-
-        <StatusChart
-          applied={analytics.applied}
-          interview={analytics.interview}
-          offer={analytics.offer}
-          rejected={analytics.rejected}
-        />
-
-        <MonthlyChart
-          data={analytics.monthlyApplications}
-        />
-
-      </div>
-
-    )}
     </div>
   );
 }

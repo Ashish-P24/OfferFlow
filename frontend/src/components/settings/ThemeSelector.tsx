@@ -1,6 +1,7 @@
+import Card from "@/components/ui/Card";
 export default function ThemeSelector() {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+    <Card>
 
       <h2 className="mb-4 text-xl font-semibold">
         Appearance
@@ -10,6 +11,6 @@ export default function ThemeSelector() {
         Theme customization will be available in a future update.
       </p>
 
-    </div>
+    </Card>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import PageHeader from "@/components/ui/PageHeader";
 import toast from "react-hot-toast";
 
 import Spinner from "@/components/ui/Spinner";
@@ -102,30 +102,29 @@ export default function Resume() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">
-          Resume
-        </h1>
-
-        <p className="mt-2 text-slate-500">
-          Upload and manage your resume.
-        </p>
-      </div>
+      <PageHeader
+        title="Resume"
+        description="Upload and manage your resume."
+      />
 
       {resume ? (
-        <ResumeCard
+        <div className="mx-auto max-w-3xl">
+          <ResumeCard
           resume={resume}
           onDownload={handleDownload}
           onDelete={handleDelete}
-        />
+          />
+        </div>
       ) : (
-        <EmptyState
-          title="No resume uploaded"
-          description="Upload your resume to keep it ready for applications."
-        />
+        <div className="mx-auto max-w-3xl">
+          <EmptyState
+            title="No resume uploaded"
+            description="Upload your resume to keep it ready for applications."
+          />
+        </div>
       )}
 
-      <div className="mt-8">
+      <div className="mx-auto mt-8 max-w-3xl">
         <ResumeUpload
           onUpload={handleUpload}
         />

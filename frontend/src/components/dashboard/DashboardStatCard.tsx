@@ -12,7 +12,20 @@ export default function DashboardStatCard({
   icon,
 }: DashboardStatCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm transition hover:shadow-md">
+    <div
+      className="
+        rounded-xl
+        border
+        border-[var(--border)]
+        bg-white
+        p-6
+        shadow-sm
+        transition-all
+        duration-200
+        hover:-translate-y-1
+        hover:shadow-lg
+      "
+    >
 
       <div className="flex items-center justify-between">
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/context/AuthContext";
 import { login as loginUser } from "@/services/authService";
@@ -31,6 +31,7 @@ export default function Login() {
 
   return (
     <div className="flex h-screen items-center justify-center bg-[var(--background)]">
+
       <div className="w-full max-w-md rounded-xl border border-[var(--border)] bg-white p-10 shadow-sm">
 
         <h1 className="text-3xl font-bold">
@@ -70,9 +71,20 @@ export default function Login() {
             Login
           </button>
 
+          <p className="text-center text-sm text-[var(--muted)]">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="font-medium text-blue-600 hover:underline"
+            >
+              Register
+            </Link>
+          </p>
+
         </div>
 
       </div>
+
     </div>
   );
 }

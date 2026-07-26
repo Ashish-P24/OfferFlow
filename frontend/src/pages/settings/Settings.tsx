@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import PageHeader from "@/components/ui/PageHeader";
 import Spinner from "@/components/ui/Spinner";
 import ChangePasswordForm from "@/components/settings/ChangePasswordForm";
 import { getProfile } from "@/services/profileService";
@@ -39,17 +39,10 @@ export default function Settings() {
   return (
     <div>
 
-      <div className="mb-8">
-
-        <h1 className="text-3xl font-bold">
-          Settings
-        </h1>
-
-        <p className="mt-2 text-[var(--muted)]">
-          Manage your profile and account.
-        </p>
-
-      </div>
+    <PageHeader
+    title="Settings"
+    description="Manage your profile and account."
+    />
 
       {profile && (
         <ProfileCard profile={profile} />
