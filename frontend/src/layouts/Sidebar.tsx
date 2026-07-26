@@ -22,7 +22,7 @@ const menu = [
   {
     title: "Interviews",
     icon: <CalendarDays size={20} />,
-    to: "#",
+    to: "/interviews",
   },
   {
     title: "Resume",

@@ -24,7 +24,6 @@ public class CreateInterviewRequest {
     @NotNull
     private LocalDate interviewDate;
 
-    @NotNull
     private LocalTime interviewTime;
 
     @NotNull

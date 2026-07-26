@@ -66,3 +66,17 @@ export async function deleteApplication(
 ) {
   await api.delete(`/jobs/${id}`);
 }
+
+export async function getApplicationOptions() {
+  const response = await api.get<PageResponse<JobApplication>>(
+    "/jobs",
+    {
+      params: {
+        page: 0,
+        size: 1000,
+      },
+    },
+  );
+
+  return response.data.content;
+}

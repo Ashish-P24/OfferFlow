@@ -21,7 +21,6 @@ public class UpdateInterviewRequest {
     @NotNull
     private LocalDate interviewDate;
 
-    @NotNull
     private LocalTime interviewTime;
 
     @NotNull
