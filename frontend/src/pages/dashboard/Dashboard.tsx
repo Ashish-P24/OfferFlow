@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import DashboardStatCard from "@/components/dashboard/DashboardStatCard";
 
+import { getAnalytics } from "@/services/analyticsService";
+
+import type { AnalyticsResponse } from "@/types/analytics";
+
+import StatusChart from "@/components/dashboard/StatusChart";
+import MonthlyChart from "@/components/dashboard/MonthlyChart";
 import {
   BriefcaseBusiness,
   CalendarDays,
@@ -22,6 +28,9 @@ import type { Resume } from "@/types/resume";
 export default function Dashboard() {
   const [stats, setStats] =
       useState<DashboardResponse | null>(null);
+  
+  const [analytics, setAnalytics] =
+    useState<AnalyticsResponse | null>(null);
 
   const [interviews, setInterviews] =
       useState<Interview[]>([]);
@@ -37,15 +46,18 @@ export default function Dashboard() {
       try {
         setLoading(true);
 
-        const [
-          dashboard,
-          interviews,
-        ] = await Promise.all([
-          getDashboard(),
-          getInterviews(),
-        ]);
+      const [
+        dashboard,
+        analytics,
+        interviews,
+      ] = await Promise.all([
+        getDashboard(),
+        getAnalytics(),
+        getInterviews(),
+      ]);
 
         setStats(dashboard);
+        setAnalytics(analytics);
         setInterviews(interviews);
 
         try {
@@ -96,6 +108,7 @@ export default function Dashboard() {
       title: "Rejected",
       value: stats.rejected,
     },
+    
   ];
 
   return (
@@ -257,6 +270,24 @@ export default function Dashboard() {
         </div>
 
       </div>
+      {analytics && (
+
+      <div className="mt-10 grid grid-cols-1 gap-8 xl:grid-cols-2">
+
+        <StatusChart
+          applied={analytics.applied}
+          interview={analytics.interview}
+          offer={analytics.offer}
+          rejected={analytics.rejected}
+        />
+
+        <MonthlyChart
+          data={analytics.monthlyApplications}
+        />
+
+      </div>
+
+    )}
     </div>
   );
 }
