@@ -4,6 +4,7 @@ import {
   FileText,
   LayoutDashboard,
   Settings,
+  SettingsIcon,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -32,8 +33,8 @@ const menu = [
   {
     title: "Settings",
     icon: <Settings size={20} />,
-    to: "#",
-  },
+    to: "/settings",
+  }
 ];
 
 export default function Sidebar() {
@@ -64,6 +65,7 @@ export default function Sidebar() {
             {item.title}
           </NavLink>
         ))}
+        
 
       </nav>
 

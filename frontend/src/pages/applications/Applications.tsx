@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import ApplicationToolbar from "@/components/applications/ApplicationToolbar";
 import ApplicationsTable from "@/components/applications/ApplicationsTable";
-import ApplicationModal from "@/components/applications/ApplicationModal";
+import ApplicationModal from "@/components/applications/Modal";
 import ApplicationForm from "@/components/applications/ApplicationForm";
 import toast from "react-hot-toast";
 import DeleteDialog from "@/components/applications/DeleteDialog";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import ApplicationModal from "@/components/applications/ApplicationModal";
+import ApplicationModal from "@/components/applications/Modal";
 import DeleteDialog from "@/components/applications/DeleteDialog";
 
 import InterviewForm from "@/components/interviews/InterviewForm";

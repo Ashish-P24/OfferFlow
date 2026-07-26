@@ -1,5 +1,5 @@
 import { Pencil, Trash2 } from "lucide-react";
-import ApplicationModal from "@/components/applications/ApplicationModal";
+import ApplicationModal from "@/components/applications/Modal";
 import type { Interview } from "@/types/interview";
 import StatusBadge from "@/components/ui/StatusBadge";
 

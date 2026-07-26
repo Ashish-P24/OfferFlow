@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-
+import Settings from "@/pages/settings/Settings";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import Dashboard from "@/pages/dashboard/Dashboard";
@@ -45,7 +45,10 @@ export default function AppRoutes() {
           path="/resume"
           element={<Resume />}
         />
-
+        <Route
+          path="/settings"
+          element={<Settings />}
+        />
       </Route>
 
       <Route
