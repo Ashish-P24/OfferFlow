@@ -27,7 +27,7 @@ const menu = [
   {
     title: "Resume",
     icon: <FileText size={20} />,
-    to: "#",
+    to: "/resume",
   },
   {
     title: "Settings",

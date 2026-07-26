@@ -5,7 +5,7 @@ import Register from "@/pages/auth/Register";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Applications from "@/pages/applications/Applications";
 import Interviews from "@/pages/interviews/Interviews";
-
+import Resume from "@/pages/resume/Resume";
 import MainLayout from "@/layouts/MainLayout";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 
@@ -39,6 +39,11 @@ export default function AppRoutes() {
         <Route
           path="/interviews"
           element={<Interviews />}
+        />
+
+        <Route
+          path="/resume"
+          element={<Resume />}
         />
 
       </Route>
